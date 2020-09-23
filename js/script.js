@@ -6,7 +6,7 @@ let allUsers = [];
 let textSearch = null;
 let btnSearch = null;
 
-let numberFormat = 0;
+let preloader = null;
 
 window.addEventListener('load', () => {
   tabUsers = document.querySelector('#tabUsers');
@@ -15,10 +15,25 @@ window.addEventListener('load', () => {
   textSearch = document.querySelector('#textSearch');
   btnSearch = document.querySelector('#btnSearch');
 
+  preloader = document.querySelector('#preloader');
+
   numberFormat = Intl.NumberFormat('pt-BR');
 
+  setPreloader();
   fetchUsers();
 });
+
+function setPreloader() {
+  const preloaderHTML = `
+    <div class="progress col s8 offset-s2">
+      <div class="indeterminate"></div>
+    </div>
+  `;
+  preloader.innerHTML = preloaderHTML;
+  setTimeout(() => {
+    preloader.innerHTML = ``;
+  }, 2000);
+}
 
 async function fetchUsers() {
   const res = await fetch(
@@ -38,6 +53,7 @@ async function fetchUsers() {
 }
 
 function render() {
+  clearList();
   handleSearchButton();
 }
 
@@ -49,16 +65,20 @@ function handleSearchButton() {
     });
     console.log(filterdUsers);
     if (search == '' || filterdUsers.length == 0) {
-      const clearUserList = `
-      <li class="collection-header"><h4>Nenhum usuário filtrado.</h4></li>
-      `;
-      tabUsers.innerHTML = clearUserList;
-      tabStatistics.innerHTML = clearUserList;
+      clearList();
     } else {
       renderUserList(filterdUsers);
       renderStatistics(filterdUsers);
     }
   });
+}
+
+function clearList() {
+  const clearList = `
+  <li class="collection-header"><h4>Nenhum usuário filtrado.</h4></li>
+  `;
+  tabUsers.innerHTML = clearList;
+  tabStatistics.innerHTML = clearList;
 }
 
 function renderUserList(filterdUsers) {
@@ -108,7 +128,7 @@ function renderStatistics(filterdUsers) {
       Soma das idades: <span>${sumAges}</span>
     </li>
     <li class="collection-item">
-      Média das idades: <span>${averageAges}</span>
+      Média das idades: <span>${averageAges.toFixed(2)}</span>
     </li>
     `;
     statsHTML = statHTML;
