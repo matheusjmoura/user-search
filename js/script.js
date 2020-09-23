@@ -17,8 +17,6 @@ window.addEventListener('load', () => {
 
   preloader = document.querySelector('#preloader');
 
-  numberFormat = Intl.NumberFormat('pt-BR');
-
   setPreloader();
   fetchUsers();
 });
